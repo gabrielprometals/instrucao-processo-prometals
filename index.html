@@ -314,6 +314,7 @@ function migrate(d){
   if(d["pf.obs"]===undefined||d["pf.obs"]===PINT_OBS_OLD)d["pf.obs"]=PINT_OBS;
   if(d["peca.destino"]==="Fica na empresa")d["peca.destino"]="Almoxarifado Prometals";
   if(d["peca.destino"]==="Volta para o dono")d["peca.destino"]="Retorno para o cliente";
+  if(d.peca){["data","cliente","codigo","descricao","liga"].forEach(f=>{const k="peca."+f;if(d[k]===undefined&&d.peca[f]!==undefined&&d.peca[f]!=="")d[k]=d.peca[f];});}
   if(d["pt.obs"]===undefined||d["pt.obs"]===PINT_OBS_OLD)d["pt.obs"]=PINT_OBS;
   if(d["pm.obs"]===undefined||d["pm.obs"]===PINT_OBS_OLD)d["pm.obs"]=PINT_OBS;
   if(d["cola.obs"]===undefined)d["cola.obs"]=DEF.cola_obs;
@@ -841,6 +842,7 @@ async function generatePDF(){
     section(()=>{secH("Dados da Peça");kvRow3("Data",val("peca.data"),"Cliente",val("peca.cliente"),"Aprovação",val("peca.aprovacao"));kvRow3("Código",val("peca.codigo"),"Liga",val("peca.liga"),"Destino",val("peca.destino"));kvRow("Descrição",val("peca.descricao"));});
     {const machoOn=on("macho.on"),altOn=on("altmolde.on");const ftm=machoOn?["caixa_frente","caixa_traseira","macho"]:["caixa_frente","caixa_traseira"];const r=altOn?(machoOn?0.9:0.58):(machoOn?1.3:1.0);section(()=>{secH("Frente · Traseira · Macho");photoGrid(ftm,machoOn?3:2,r);});}
     {if(on("altmolde.on")){section(()=>{secH("Alterações no Molde");photoGrid(["alt_frente","alt_traseira"],2,1.0);lab("OBS");para(val("alt.obs"));});}}
+    {if(!on("altmolde.on"))newPage();}
     {const luvaOn=on("luva.on");section(()=>{secH(luvaOn?"Lista de Insumos · Posição da Luva":"Lista de Insumos");
       const gap=6,pW=CW*0.44,pH=pW,listX=luvaOn?(M+pW+gap):M,listW=luvaOn?(CW-pW-gap):CW;
       const items=[];
